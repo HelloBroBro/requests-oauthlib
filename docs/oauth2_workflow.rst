@@ -72,8 +72,8 @@ the provider is Google and the protected resource is the user's profile.
             # parameters.
             access_type="offline", prompt="select_account")
 
-    >>> print 'Please go to %s and authorize access.' % authorization_url
-    >>> authorization_response = raw_input('Enter the full callback URL')
+    >>> print(f'Please go to {authorization_url} and authorize access.')
+    >>> authorization_response = input('Enter the full callback URL')
 
 2. Fetch an access token from the provider using the authorization code
    obtained during user authorization.
@@ -249,13 +249,13 @@ is necessary but refreshing is done manually.
     >>> from requests_oauthlib import OAuth2Session
     >>> from oauthlib.oauth2 import TokenExpiredError
     >>> try:
-    ...     client = OAuth2Session(client_id, token=token)
-    ...     r = client.get(protected_url)
+    ...     oauth = OAuth2Session(client_id, token=token)
+    ...     r = oauth.get(protected_url)
     >>> except TokenExpiredError as e:
-    ...     token = client.refresh_token(refresh_url, **extra)
+    ...     token = oauth.refresh_token(refresh_url, **extra)
     ...     token_saver(token)
-    >>> client = OAuth2Session(client_id, token=token)
-    >>> r = client.get(protected_url)
+    >>> oauth = OAuth2Session(client_id, token=token)
+    >>> r = oauth.get(protected_url)
 
 (Second) Define automatic token refresh automatic but update manually
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -268,9 +268,9 @@ is done manually.
 
     >>> from requests_oauthlib import OAuth2Session, TokenUpdated
     >>> try:
-    ...     client = OAuth2Session(client_id, token=token,
+    ...     oauth = OAuth2Session(client_id, token=token,
     ...             auto_refresh_kwargs=extra, auto_refresh_url=refresh_url)
-    ...     r = client.get(protected_url)
+    ...     r = oauth.get(protected_url)
     >>> except TokenUpdated as e:
     ...     token_saver(e.token)
 
@@ -284,9 +284,9 @@ however that you still need to update ``expires_in`` to trigger the refresh.
 .. code-block:: pycon
 
     >>> from requests_oauthlib import OAuth2Session
-    >>> client = OAuth2Session(client_id, token=token, auto_refresh_url=refresh_url,
+    >>> oauth = OAuth2Session(client_id, token=token, auto_refresh_url=refresh_url,
     ...     auto_refresh_kwargs=extra, token_updater=token_saver)
-    >>> r = client.get(protected_url)
+    >>> r = oauth.get(protected_url)
 
 TLS Client Authentication
 -------------------------
